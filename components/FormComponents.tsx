@@ -29,7 +29,7 @@ export const CustomFormField = ({ name, control }: CustomFormFieldProps) => {
         <FormItem>
           <FormLabel className="capitalize">{name}</FormLabel>
           <FormControl>
-            <Input placeholder="shadcn" {...field} />
+            <Input {...field} />
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -57,7 +57,7 @@ export const CustomSelectField = ({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className="capitalize">{labelText || name}</FormLabel>
+          <FormLabel className="capitalize">{labelText ?? name}</FormLabel>
           <Select onValueChange={field.onChange} defaultValue={field.value}>
             <FormControl>
               <SelectTrigger>
