@@ -4,6 +4,7 @@ import { getAllJobsAction } from "@/utils/actions";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import ButtonContainer from "./ButtonContainer";
+import ComplexButtonContainer from "./ComplexButtonContainer";
 import JobCard from "./JobCard";
 
 const JobsList = () => {
@@ -31,7 +32,7 @@ const JobsList = () => {
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-xl font-semibold capitalize">{count} jobs found</h2>
         {count > 2 && (
-          <ButtonContainer totalPages={totalPages} currentPage={page} />
+          <ComplexButtonContainer totalPages={totalPages} currentPage={page} />
         )}
       </div>
       <div className="grid md:grid-cols-2 gap-8">
