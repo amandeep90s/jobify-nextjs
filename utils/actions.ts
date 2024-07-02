@@ -71,13 +71,17 @@ export const getAllJobsAction = async ({
     if (jobStatus && jobStatus !== "all") {
       whereClause = { ...whereClause, status: jobStatus };
     }
-
+    const skip = (page - 1) * limit;
     const jobs: JobType[] = await prisma.job.findMany({
       where: whereClause,
+      skip,
+      take: limit,
       orderBy: { createdAt: "desc" },
     });
+    const count: number = await prisma.job.count({ where: whereClause });
+    const totalPages: number = Math.ceil(count / limit);
 
-    return { jobs, count: 0, page: 1, totalPages: 0 };
+    return { jobs, count, page, totalPages };
   } catch (error) {
     console.log(error);
     return { jobs: [], count: 0, page: 1, totalPages: 0 };
@@ -185,17 +189,20 @@ export const getChartsDataAction = async (): Promise<
         createdAt: "asc",
       },
     });
-    let applicationsPerMonth = jobs.reduce((acc, job) => {
-      const date = dayjs(job.createdAt).format("MMM YY");
-      const existingEntry = acc.find((entry) => entry.date === date);
+    let applicationsPerMonth = jobs.reduce(
+      (acc: Array<{ date: string; count: number }>, job: JobType) => {
+        const date = dayjs(job.createdAt).format("MMM YY");
+        const existingEntry = acc.find((entry) => entry.date === date);
 
-      if (existingEntry) {
-        existingEntry.count += 1;
-      } else {
-        acc.push({ date, count: 1 });
-      }
-      return acc;
-    }, [] as Array<{ date: string; count: number }>);
+        if (existingEntry) {
+          existingEntry.count += 1;
+        } else {
+          acc.push({ date, count: 1 });
+        }
+        return acc;
+      },
+      []
+    );
 
     return applicationsPerMonth;
   } catch (error) {
